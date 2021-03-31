@@ -9,5 +9,32 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-### Proposal
-Proposal stuff.
+### Q1: Names of team members and project coordinator.
+
+Aaron Hanrahan, Emily Pollock, Maddie Egbert, Nick Cory, Ritvik Maripally, Shellie Jurchisin
+
+### Q2: The link to the data source.
+
+https://covid.cdc.gov/covid-data-tracker/#vaccinations
+
+### Q3: An overview of the dataset(s).
+
+a. This data source provides an integrated, county view of key data for monitoring the COVID-19 pandemic in the United States. It allows for the exploration of standardized data across the country. 
+
+b. This site includes maps and charts tracking cases, deaths, and trends of COVID-19 in the United States, and is updated weekly. Pages and tabs this site covers are…
+
+b.i. Communities, Vaccinations, Cases & Deaths, Demographic Trends, Health Care Settings, Testing, People at Risk, and Communication Resources.
+
+b.ii. We will mainly be focusing on Vaccinations, Cases & Deaths, and Demographic Trends.
+
+### Q4: A brief plan for an exploratory analysis: What questions can be answered from the dataset?
+
+Explore recent (~30 days) data because the U.S. has only recently begun vaccinating its population. Might need to be longer than 7 days if comparing cases, deaths, etc.. as typical covid cases last around ~10-14 days. 
+
+a.Which state has the highest amount of cases? Does this state also provide the most vaccinations? (use cases and vaccines data)
+
+b.Is there a decline in cases as more vaccines are administered? (using cases and vaccines data)
+
+c.How does age play a role in the number of cases and deaths? (using demographic data and cases/deaths)
+
+d. What states had the highest percent increase in cases in the past 30 days? (using cases data)
