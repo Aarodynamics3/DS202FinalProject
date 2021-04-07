@@ -1,0 +1,15 @@
+---
+title: "Team"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, error=FALSE, message=FALSE, warning=FALSE}
+# Import data.
+casesByAge <- readr::read_csv('cases_by_age_group.csv')
+deathsByAge <- readr::read_csv('deaths_by_age_group.csv')
+covid19Data <- readr::read_csv('covid19_vaccinations_in_the_united_states.csv')
+```
