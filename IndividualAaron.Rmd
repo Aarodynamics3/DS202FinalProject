@@ -94,5 +94,17 @@ covid19Data$percent.1plus.Doses.18plus <- as.numeric(covid19Data$percent.1plus.D
 ```
 
 ```{r}
-str(covid19Data)
+dosesAdministered <- covid19Data %>%
+  select(State, doses.Administered.Moderna, doses.Administered.Janssen, doses.Administered.Pfizer,
+  doses.Administered.Unknown) %>%
+  rename(
+    moderna = doses.Administered.Moderna,
+    pfizer = doses.Administered.Pfizer,
+    janssen = doses.Administered.Janssen,
+    unknown = doses.Administered.Unknown
+  ) %>%
+  pivot_longer(!State, names_to = "vaccineName", values_to = "administeredCount")
+  
+
+str(dosesAdministered)
 ```
