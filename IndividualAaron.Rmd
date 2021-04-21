@@ -1,5 +1,7 @@
 ---
-title: "Team"
+title: "IndividualAaron"
+author: "Aaron Hanrahan"
+date: "4/18/2021"
 output: html_document
 ---
 
@@ -89,4 +91,8 @@ covid19Data$percent.Fully.Vaccinated <- as.numeric(covid19Data$percent.Fully.Vac
 covid19Data$percent.Fully.Vaccinated.18plus <- as.numeric(covid19Data$percent.Fully.Vaccinated.18plus)
 covid19Data$percent.1plus.Doses <- as.numeric(covid19Data$percent.1plus.Doses)
 covid19Data$percent.1plus.Doses.18plus <- as.numeric(covid19Data$percent.1plus.Doses.18plus)
+```
+
+```{r}
+str(covid19Data)
 ```
