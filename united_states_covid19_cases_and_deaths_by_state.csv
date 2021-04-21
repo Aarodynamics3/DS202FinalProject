@@ -1,7 +1,4 @@
-﻿United States COVID-19 Cases and Deaths by State
-Date generated: Wed Apr 07 2021 12:28:00 GMT-0500 (Central Daylight Time)
-
-State/Territory,Total Cases,Confirmed Cases,Probable Cases,Cases in Last 7 Days,Case Rate per 100000,Total Deaths,Confirmed Deaths,Probable Deaths,Deaths in Last 7 Days,Death Rate per 100000,7-Day Cases Rate per 100000,7-Day Death Rate per 100000
+﻿State/Territory,Total Cases,Confirmed Cases,Probable Cases,Cases in Last 7 Days,Case Rate per 100000,Total Deaths,Confirmed Deaths,Probable Deaths,Deaths in Last 7 Days,Death Rate per 100000,7-Day Cases Rate per 100000,7-Day Death Rate per 100000
 Alaska,61401,0,0,1691,8393,309,null,null,0,42,231.2,0
 Alabama,516918,402538,114380,2299,10542,10638,8389,2249,113,216,46.9,2.3
 Arkansas,331098,0,0,1090,10972,5648,null,null,47,187,36.1,1.6
