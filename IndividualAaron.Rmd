@@ -108,3 +108,81 @@ dosesAdministered <- covid19Data %>%
 
 str(dosesAdministered)
 ```
+
+```{r}
+# Which vaccine is most popular across the different states?
+
+nonContiguous <- c("American Samoa", "Bureau of Prisons", "Dept of Defense", "Federated States of Micronesia", "Indian Health Svc", "Marshall Islands", "Northern Mariana Islands", "Puerto Rico", "Republic of Palau", "Veterans Health", "Virgin Islands", "Guam", "Alaska", "Hawaii")
+
+popular <- covid19Data %>%
+  select(State, people.Fully.Vaccinated.Pfizer, people.Fully.Vaccinated.Moderna, people.Fully.Vaccinated.Janssen, 
+  people.Fully.Vaccinated.Unknown) %>%
+  rename(
+    moderna = people.Fully.Vaccinated.Moderna,
+    pfizer = people.Fully.Vaccinated.Pfizer,
+    janssen = people.Fully.Vaccinated.Janssen,
+    unknown = people.Fully.Vaccinated.Unknown
+  ) %>%
+  pivot_longer(!State, names_to = "vaccineName", values_to = "numFullyVac") %>%
+  filter(!(State %in% nonContiguous))
+
+```
+
+```{r}
+popularEachState <- popular %>%
+  group_by(State) %>%
+  top_n(1, numFullyVac)
+
+popularEachState$State <- tolower(popularEachState$State)
+
+state <- map_data("state")
+
+popEachStateMap <- popularEachState %>%
+  left_join(state, by = c("State" = "region"))
+```
+
+```{r}
+popEachStateMap %>%
+  ggplot(aes(x = long, y = lat, fill = vaccineName)) + geom_polygon(aes(group=group), color = "black")
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
