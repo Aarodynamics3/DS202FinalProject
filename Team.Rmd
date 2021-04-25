@@ -19,6 +19,7 @@ covid19Data <- readr::read_csv('covid19_vaccinations_in_the_united_states.csv')
 library(lubridate)
 library(dplyr)
 library(tidyverse)
+library(ggthemes)
 ```
 
 ```{r, echo = FALSE}

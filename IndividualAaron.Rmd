@@ -21,6 +21,7 @@ covid19Data <- readr::read_csv('covid19_vaccinations_in_the_united_states.csv')
 library(lubridate)
 library(dplyr)
 library(tidyverse)
+library(ggthemes)
 ```
 
 ```{r, echo = FALSE}
@@ -94,22 +95,6 @@ covid19Data$percent.1plus.Doses.18plus <- as.numeric(covid19Data$percent.1plus.D
 ```
 
 ```{r}
-dosesAdministered <- covid19Data %>%
-  select(State, doses.Administered.Moderna, doses.Administered.Janssen, doses.Administered.Pfizer,
-  doses.Administered.Unknown) %>%
-  rename(
-    moderna = doses.Administered.Moderna,
-    pfizer = doses.Administered.Pfizer,
-    janssen = doses.Administered.Janssen,
-    unknown = doses.Administered.Unknown
-  ) %>%
-  pivot_longer(!State, names_to = "vaccineName", values_to = "administeredCount")
-  
-
-str(dosesAdministered)
-```
-
-```{r}
 # Which vaccine is most popular across the different states?
 
 nonContiguous <- c("American Samoa", "Bureau of Prisons", "Dept of Defense", "Federated States of Micronesia", "Indian Health Svc", "Marshall Islands", "Northern Mariana Islands", "Puerto Rico", "Republic of Palau", "Veterans Health", "Virgin Islands", "Guam", "Alaska", "Hawaii")
@@ -142,21 +127,81 @@ popEachStateMap <- popularEachState %>%
 ```
 
 ```{r}
-popEachStateMap %>%
-  ggplot(aes(x = long, y = lat, fill = vaccineName)) + geom_polygon(aes(group=group), color = "black")
+p <- popEachStateMap %>%
+  ggplot(aes(x = long, y = lat, fill = vaccineName)) + geom_polygon(aes(group=group), color = "white") +
+  theme_map() + ggtitle("Which Vaccine are More People Fully Vaccinated With Per State?")
 
+p + scale_fill_manual(name = "Vaccine Name", values = c("#D23369", "#2A3990"), labels = c("Moderna", 
+  "Pfizer"))
 ```
 
+```{r}
+# Which vaccine is getting administered the most across the different states?
 
+administered <- covid19Data %>%
+  select(State, doses.Administered.Moderna, doses.Administered.Janssen, doses.Administered.Pfizer,
+  doses.Administered.Unknown) %>%
+  rename(
+    moderna = doses.Administered.Moderna,
+    pfizer = doses.Administered.Pfizer,
+    janssen = doses.Administered.Janssen,
+    unknown = doses.Administered.Unknown
+  ) %>%
+  pivot_longer(!State, names_to = "vaccineName", values_to = "administeredCount") %>%
+  filter(!(State %in% nonContiguous))
 
+adminEachState <- administered %>%
+  group_by(State) %>%
+  top_n(1, administeredCount)
+  
+adminEachState$State <- tolower(adminEachState$State)
 
+adminEachStateMap <- adminEachState %>%
+  left_join(state, by = c("State" = "region"))
+```
 
+```{r}
+q <- adminEachStateMap %>%
+  ggplot(aes(x = long, y = lat, fill = vaccineName)) + geom_polygon(aes(group=group), color = "white") +
+  theme_map() + ggtitle("Which Vaccine are More People Administered Per State?")
 
+q + scale_fill_manual(name = "Vaccine Name", values = c("#D23369", "#2A3990"), labels = c("Moderna", 
+  "Pfizer"))
+```
 
+```{r}
+# Sum of fully vaccinated and administered across all U.S.
 
+administeredTotal <- administered %>%
+  select(-State) %>%
+  group_by(vaccineName) %>%
+  summarize(administeredCount = sum(administeredCount)) %>%
+  mutate(administeredCount = (administeredCount / sum(administeredCount)) * 100)
+  
+popularTotal <- popular %>%
+  select(-State) %>%
+  group_by(vaccineName) %>%
+  summarize(numFullyVac = sum(numFullyVac)) %>%
+  mutate(numFullyVac = (numFullyVac / sum(numFullyVac)) * 100)
 
+totalData <- administeredTotal %>%
+  left_join(popularTotal, by = "vaccineName") %>%
+  rename(
+    administered = administeredCount,
+    fullyVaccinated = numFullyVac
+  ) %>%
+  pivot_longer(!vaccineName, names_to = "type", values_to = "values")
+```
 
+```{r}
+q <- totalData %>% 
+  ggplot(aes(x = vaccineName, weight = values, fill = type)) + geom_bar(position = 'dodge') + geom_text(aes(label =
+  round(values, digits = 2)), stat = "count", colour = "white", position = position_dodge(.9), vjust = 1)
 
+q + scale_fill_manual(name = "Distribution Type", values = c("#D23369", "#2A3990"), labels = c("Administered", 
+  "Fully Vaccinated")) + ylab("Percentage") + xlab("Vaccine Company") + scale_x_discrete(labels = c("Johnson & Johnson", 
+  "Moderna", "Pfizer", "Unknown")) + ggtitle("Vaccine Percentage Comparison Between Administered and Fully Vaccinated")
+```
 
 
 
