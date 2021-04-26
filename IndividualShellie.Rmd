@@ -1,7 +1,14 @@
 ---
 title: "Team"
+author: "Shellie Jurchisin, Aaron Hanrahan, Madeline Egbert, Ritvik Maripally, Nick Cory"
+date: "4/19/2021"
 output: html_document
 ---
+```{r}
+library(tidyverse)
+library(lubridate)
+library(dplyr)
+```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -14,15 +21,7 @@ deathsByAge <- readr::read_csv('deaths_by_age_group.csv')
 covid19Data <- readr::read_csv('covid19_vaccinations_in_the_united_states.csv')
 ```
 
-```{r, error=FALSE, message=FALSE, warning=FALSE}
-# Packages
-library(lubridate)
-library(dplyr)
-library(tidyverse)
-library(ggthemes)
-```
-
-```{r, echo = FALSE}
+```{r}
 covid19Data <- covid19Data %>%
   rename(
     State = `State/Territory/Federal Entity`,
@@ -79,7 +78,7 @@ covid19Data <- covid19Data %>%
   )
 ```
 
-```{r, error=FALSE, message=FALSE, warning=FALSE, echo = FALSE}
+```{r}
 covid19Data$doses.Per.100K <- as.numeric(covid19Data$doses.Per.100K)
 covid19Data$doses.Per.100K.18plus <- as.numeric(covid19Data$doses.Per.100K.18plus)
 covid19Data$doses.Administered.Per.100k <- as.numeric(covid19Data$doses.Administered.Per.100k)
@@ -90,4 +89,19 @@ covid19Data$percent.Fully.Vaccinated <- as.numeric(covid19Data$percent.Fully.Vac
 covid19Data$percent.Fully.Vaccinated.18plus <- as.numeric(covid19Data$percent.Fully.Vaccinated.18plus)
 covid19Data$percent.1plus.Doses <- as.numeric(covid19Data$percent.1plus.Doses)
 covid19Data$percent.1plus.Doses.18plus <- as.numeric(covid19Data$percent.1plus.Doses.18plus)
+```
+
+```{r}
+dosesAdministered <- covid19Data %>%
+  select(State, doses.Administered.Moderna, doses.Administered.Janssen, doses.Administered.Pfizer,
+  doses.Administered.Unknown) %>%
+  rename(
+    moderna = doses.Administered.Moderna,
+    pfizer = doses.Administered.Pfizer,
+    janssen = doses.Administered.Janssen,
+    unknown = doses.Administered.Unknown
+  ) %>%
+  pivot_longer(!State, names_to = "vaccineName", values_to = "administeredCount")
+  
+str(dosesAdministered)
 ```
