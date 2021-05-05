@@ -131,9 +131,18 @@ covid19Data1
 ```
 
 ```{r}
+casesdeathsstates2
+```
+#After sorting the COVID case data by the top five states with the highest total cases, we found that California, Texas, Florida, Illinois and Georgia have had the highest total cases over the course of the pandemic so far. All of these states have case totals over one million, but California comes out on top with a whopping 3,582,463 cases. It is no surprise that the states with the highest cases are also in the top 10 for the most populous states in the U.S.
+
+```{r}
 covid19Data2 <- covid19Data %>%
   filter(State != 'American Samoa', State != 'Bureau of Prisons', State != 'District of Columbia', State != 'Dept of Defense', State != 'Federated States of Micronesia', State != 'Guam', State != 'Indian Health Svc', State != 'Marshall Islands', State != 'Northern Mariana Islands', State != 'Puerto Rico', State != 'Republic of Palau', State != 'Veterans Health', State != 'Virgin Islands')
 covid19Data2
+```
+
+```{r}
+covid19Data1
 ```
 
 ```{r}
