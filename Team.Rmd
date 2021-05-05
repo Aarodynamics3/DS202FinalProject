@@ -146,6 +146,7 @@ In general, our questions were looking at COVID-19 cases and death data and how 
 
 ## **Overview of the Dataset**
 GitHub Repository: https://github.com/Aarodynamics3/DS202FinalProject
+
 #### **Obtaining our Data**
 Our data came from the covid.cdc.gov/ website and was downloaded on April 7, 2021. The specific datasets that were used in this analysis came from https://covid.cdc.gov/covid-data-tracker/#vaccinations.
 
