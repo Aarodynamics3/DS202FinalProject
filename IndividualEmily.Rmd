@@ -131,8 +131,16 @@ covid19Data1
 ```
 
 ```{r}
-ggplot(covid19Data2, aes(x = State, weight = people.Fully.Vaccinated)) + geom_bar(fill = "#9C254D") + theme(axis.text.x = element_text(angle = 90)) + ggtitle("People Fully Vaccinated by State") + xlab("State") + ylab("Count")
+covid19Data2 <- covid19Data %>%
+  filter(State != 'American Samoa', State != 'Bureau of Prisons', State != 'District of Columbia', State != 'Dept of Defense', State != 'Federated States of Micronesia', State != 'Guam', State != 'Indian Health Svc', State != 'Marshall Islands', State != 'Northern Mariana Islands', State != 'Puerto Rico', State != 'Republic of Palau', State != 'Veterans Health', State != 'Virgin Islands')
+covid19Data2
 ```
+
+```{r}
+ggplot(covid19Data2, aes(x = State, weight = total.Doses.Administered)) + geom_bar(fill = "#9C254D") + theme(axis.text.x = element_text(angle = 90)) + ggtitle("Vaccines Administered by State") + xlab("State") + ylab("Count")
+```
+
+#It makes sense that California, Florida, New York, Pennsylvania and Texas have the highest total of administered doses because they make up the top five most populated states. Out of these states, Florida, New York and Pennsylvania also have some of the highest numbers for COVID-19 cases over the course of seven days. All of these five states have had over 25,000 cases in this time frame. And, when looking at the states in the top five for total COVID-19 cases, California, Florida and Texas have some of the highest totals, which reach over two million. Illinois and Georgia are also in the top five for COVID-19 cases, even though they rank just outside of the top five populated states. Their populations are high enough to explain their hight total cases.
 
 
 ```{r}
@@ -141,16 +149,8 @@ covid19Data2$percent.Fully.Vaccinated <- as.numeric(covid19Data2$percent.Fully.V
 ggplot(covid19Data2, aes(x = State, weight = percent.Fully.Vaccinated)) + geom_bar(fill = "#F06292") + theme(axis.text.x = element_text(angle = 90)) + ggtitle("Percent of People Fully Vaccinated by State") + xlab("State") + ylab("Percent Vaccinated")
 ```
 
-#It makes sense that California, Florida, New York, Pennsylvania and Texas have the highest total of administered doses because they make up the top five most populated states. Out of these states, Florida, New York and Pennsylvania also have some of the highest numbers for COVID-19 cases over the course of seven days. All of these five states have had over 25,000 cases in this time frame. And, when looking at the states in the top five for total COVID-19 cases, California, Florida and Texas have some of the highest totals, which reach over two million. Illinois and Georgia are also in the top five for COVID-19 cases, even though they rank just outside of the top five populated states. Their populations are high enough to explain their hight total cases.
-
 
 #When looking at the percent of people fully vaccinated by state, the states that have smaller areas and smaller populations have the highest percentages. This makes sense because there are less people to get vaccinated.
-
-```{r}
-covid19Data2 <- covid19Data %>%
-  filter(State != 'American Samoa', State != 'Bureau of Prisons', State != 'District of Columbia', State != 'Dept of Defense', State != 'Federated States of Micronesia', State != 'Guam', State != 'Indian Health Svc', State != 'Marshall Islands', State != 'Northern Mariana Islands', State != 'Puerto Rico', State != 'Republic of Palau', State != 'Veterans Health', State != 'Virgin Islands')
-covid19Data2
-```
 
 ```{r}
 casesdeathsstates3 <- casesdeathsstates %>%
