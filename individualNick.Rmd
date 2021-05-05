@@ -1,15 +1,7 @@
 ---
-title: "Team"
-author: "Shellie Jurchisin, Aaron Hanrahan, Madeline Egbert, Ritvik Maripally, Nick Cory"
-date: "4/19/2021"
+title: "individualNick"
 output: html_document
 ---
-```{r}
-library(tidyverse)
-library(lubridate)
-library(dplyr)
-library(ggthemes)
-```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -20,10 +12,17 @@ knitr::opts_chunk$set(echo = TRUE)
 casesByAge <- readr::read_csv('cases_by_age_group.csv')
 deathsByAge <- readr::read_csv('deaths_by_age_group.csv')
 covid19Data <- readr::read_csv('covid19_vaccinations_in_the_united_states.csv')
-covid19DeathsbyState <- readr::read_csv('united_states_covid19_cases_and_deaths_by_state.csv')
 ```
 
-```{r}
+```{r, error=FALSE, message=FALSE, warning=FALSE}
+# Packages
+library(lubridate)
+library(dplyr)
+library(tidyverse)
+library(ggthemes)
+```
+
+```{r, echo = FALSE}
 covid19Data <- covid19Data %>%
   rename(
     State = `State/Territory/Federal Entity`,
@@ -80,7 +79,7 @@ covid19Data <- covid19Data %>%
   )
 ```
 
-```{r}
+```{r, error=FALSE, message=FALSE, warning=FALSE, echo = FALSE}
 covid19Data$doses.Per.100K <- as.numeric(covid19Data$doses.Per.100K)
 covid19Data$doses.Per.100K.18plus <- as.numeric(covid19Data$doses.Per.100K.18plus)
 covid19Data$doses.Administered.Per.100k <- as.numeric(covid19Data$doses.Administered.Per.100k)
@@ -93,29 +92,34 @@ covid19Data$percent.1plus.Doses <- as.numeric(covid19Data$percent.1plus.Doses)
 covid19Data$percent.1plus.Doses.18plus <- as.numeric(covid19Data$percent.1plus.Doses.18plus)
 ```
 
-#2 - What states had the largest amount of deaths over the span of a week? (using cases/states data)
-```{r}
-mostdeaths7days1 <- covid19DeathsbyState %>%   
-  rename(State = `State/Territory`, ) %>% 
-  filter(State != 'United States of America', State != 'New York City') %>%
-  select(State, `Deaths in Last 7 Days`) %>%
-  top_n(5, `Deaths in Last 7 Days`)
-str(mostdeaths7days1)
-```
-```{r}
-ggplot(mostdeaths7days1, aes(x= State, weight = `Deaths in Last 7 Days`)) + geom_bar(fill = '#2A3990') + scale_x_discrete(limit = c('California', 'Texas', 'Florida', 'Georgia', 'New Jersey')) + ggtitle('Top 5 States with Most Deaths in Last 7 Days') + xlab('State') + ylab('Deaths in Last 7 Days')
-```
 
 ```{r}
-mostdeaths7days <- covid19DeathsbyState %>%   
-  rename(State = `State/Territory`, ) %>% 
-  filter(State != 'United States of America', State != 'New York City') %>%
-  select(State, `Deaths in Last 7 Days`) %>%
-  top_n(10, `Deaths in Last 7 Days`)
-str(mostdeaths7days)
-```
-```{r}
-ggplot(mostdeaths7days, aes(x= State, weight = `Deaths in Last 7 Days`)) + geom_bar(fill = '#2A3990') + scale_x_discrete(limit = c('California', 'Texas', 'Florida', 'Georgia', 'New Jersey', 'Massachusetts', 'Pennsylvania', 'New York', 'Virginia', 'Illinois')) + ggtitle('Top 10 States with Most Deaths in Last 7 Days') + xlab('State') + ylab('Deaths in Last 7 Days') + coord_flip()
+
 ```
 
 
+
+
+```{r}
+casesAndDeaths <- merge(x=casesByAge, y=deathsByAge, by='Age Group')
+
+#Small Data Cleaning 
+casesAndDeaths$`Percentage of deaths`[1] <- 0
+casesAndDeaths$`Percentage of deaths` <- as.numeric(casesAndDeaths$`Percentage of deaths`)
+casesAndDeaths$`Age Group`[1] <- '0-04 years'
+casesAndDeaths$'Age Group'[5] <- '05-17 years'
+casesAndDeaths <- dplyr::rename(casesAndDeaths, `Percent of US Population` = `Percent of US population.x`)
+
+casesAndDeaths2 <- casesAndDeaths %>%
+  subset(select = -c(3,6:7)) %>%
+  pivot_longer(`Percent of cases`:`Percentage of deaths` ,names_to = 'Percent of Group', values_to = "count") %>%
+  ggplot(aes(fill=`Percent of Group`, y=count, x=`Age Group`)) + 
+    geom_bar(position="dodge", stat="identity") +
+    ggtitle("Percent of Population Affected by Age Group") +
+    xlab("") +
+    ylab("Percentage of Population") +
+    theme(axis.text.x = element_text(angle = 90))+ 
+    scale_fill_manual(values = c("#a10742", "#ff4784", "#242b88")) 
+
+casesAndDeaths2
+```

@@ -1,29 +1,39 @@
 ---
-title: "Team"
-author: "Shellie Jurchisin, Aaron Hanrahan, Madeline Egbert, Ritvik Maripally, Nick Cory"
+title: "FinalProject"
+author: "Madeline Egbert"
 date: "4/19/2021"
 output: html_document
 ---
-```{r}
-library(tidyverse)
-library(lubridate)
-library(dplyr)
-library(ggthemes)
-```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r, error=FALSE, message=FALSE, warning=FALSE}
-# Import data.
-casesByAge <- readr::read_csv('cases_by_age_group.csv')
-deathsByAge <- readr::read_csv('deaths_by_age_group.csv')
-covid19Data <- readr::read_csv('covid19_vaccinations_in_the_united_states.csv')
-covid19DeathsbyState <- readr::read_csv('united_states_covid19_cases_and_deaths_by_state.csv')
+```{r}
+library(tidyverse)
+library(dplyr)
+library(lubridate)
 ```
 
+
+```{r, error = FALSE, message = FALSE, warning = FALSE}
+deathsByAge <- readr::read_csv('deaths_by_age_group.csv')
+
+casesByAge <- readr::read_csv('cases_by_age_group.csv')
+
+covid19Data <- readr::read_csv('covid19_vaccinations_in_the_united_states.csv')
+
+casesdeathsByState <- readr::read_csv('united_states_covid19_cases_and_deaths_by_state.csv')
+```
+
+
 ```{r}
+deathsByAge
+casesByAge
+covid19Data
+```
+
+```{r, echo = FALSE}
 covid19Data <- covid19Data %>%
   rename(
     State = `State/Territory/Federal Entity`,
@@ -80,7 +90,7 @@ covid19Data <- covid19Data %>%
   )
 ```
 
-```{r}
+```{r, error=FALSE, message=FALSE, warning=FALSE, echo = FALSE}
 covid19Data$doses.Per.100K <- as.numeric(covid19Data$doses.Per.100K)
 covid19Data$doses.Per.100K.18plus <- as.numeric(covid19Data$doses.Per.100K.18plus)
 covid19Data$doses.Administered.Per.100k <- as.numeric(covid19Data$doses.Administered.Per.100k)
@@ -93,29 +103,62 @@ covid19Data$percent.1plus.Doses <- as.numeric(covid19Data$percent.1plus.Doses)
 covid19Data$percent.1plus.Doses.18plus <- as.numeric(covid19Data$percent.1plus.Doses.18plus)
 ```
 
-#2 - What states had the largest amount of deaths over the span of a week? (using cases/states data)
 ```{r}
-mostdeaths7days1 <- covid19DeathsbyState %>%   
-  rename(State = `State/Territory`, ) %>% 
+str(covid19Data)
+```
+
+#What states had the highest increase in cases over the span of a week?
+
+
+```{r}
+mostcases7days <- casesdeathsByState %>%
+   rename(State = `State/Territory`, ) %>%
   filter(State != 'United States of America', State != 'New York City') %>%
-  select(State, `Deaths in Last 7 Days`) %>%
-  top_n(5, `Deaths in Last 7 Days`)
-str(mostdeaths7days1)
+  select(State, `Cases in Last 7 Days`) %>%
+  top_n(10, `Cases in Last 7 Days`)
+
+str(mostcases7days)
 ```
 ```{r}
-ggplot(mostdeaths7days1, aes(x= State, weight = `Deaths in Last 7 Days`)) + geom_bar(fill = '#2A3990') + scale_x_discrete(limit = c('California', 'Texas', 'Florida', 'Georgia', 'New Jersey')) + ggtitle('Top 5 States with Most Deaths in Last 7 Days') + xlab('State') + ylab('Deaths in Last 7 Days')
+casesweek <- mostcases7days %>%
+  group_by(State) %>%
+  summarize(`Cases in Last 7 Days` = max(`Cases in Last 7 Days`)) %>%
+  arrange(desc(`Cases in Last 7 Days`)) %>%
+  head(n=5)
+
+head(casesweek)
+```
+
+#explanation: The top 5 states with the most cases in the span of a week are as follows: Michigan, Florida, Pennsylvania, New Jersey and New York. Michigan has 10,164 more cases in a week than Florida which is decently large spike in Michigan. 
+
+```{r}
+topcases7days <- ggplot(mostcases7days, aes(x=State, y=`Cases in Last 7 Days`)) + geom_point() + ggtitle('Top States with Most Cases in Last 7 Days') + xlab('State') + ylab('Cases in Last 7 Days')
+
+topcases7days + geom_abline(intercept = 20000, slope = 100, color = "red")
 ```
 
 ```{r}
-mostdeaths7days <- covid19DeathsbyState %>%   
-  rename(State = `State/Territory`, ) %>% 
-  filter(State != 'United States of America', State != 'New York City') %>%
-  select(State, `Deaths in Last 7 Days`) %>%
-  top_n(10, `Deaths in Last 7 Days`)
-str(mostdeaths7days)
-```
-```{r}
-ggplot(mostdeaths7days, aes(x= State, weight = `Deaths in Last 7 Days`)) + geom_bar(fill = '#2A3990') + scale_x_discrete(limit = c('California', 'Texas', 'Florida', 'Georgia', 'New Jersey', 'Massachusetts', 'Pennsylvania', 'New York', 'Virginia', 'Illinois')) + ggtitle('Top 10 States with Most Deaths in Last 7 Days') + xlab('State') + ylab('Deaths in Last 7 Days') + coord_flip()
+CasesCount <- ggplot(mostcases7days, aes(x=State, y= `Cases in Last 7 Days`)) + geom_point() + ggtitle('Top States with Most Cases in Last 7 Days') + xlab('State') + ylab('Cases in Last 7 Days')
+
+CasesCount + geom_abline(intercept = 100, slope = 50, color = "Purple")
+
+ggplot(mostcases7days, aes(x= State, weight = `Cases in Last 7 Days`)) + geom_bar()
 ```
 
+
+
+
+```{r}
+ggplot(mostcases7days, aes(x=State, weight = `Cases in Last 7 Days`)) + geom_bar(fill = '#D23369') + scale_x_discrete(limit = c('Michigan', 'Florida', 'Pennsylvania', 'New Jersey', 'New York')) + ggtitle('Top 5 States with Most Cases in a Week') + xlab('State') + ylab('Cases in a Week')
+```
+
+#explanation: according to the results of the above graph,the top 5 states with the most cases recorded within the span of a week include: Michigan, Florida, Pennsylvania, New Jersey, and New York. I am suprised to not see California in the top 5 because of how large the state is and how populated it is as well. 
+
+
+
+```{r}
+ggplot(mostcases7days, aes(x = State, weight = `Cases in Last 7 Days`)) + geom_bar(fill = '#D23369') + scale_x_discrete(limit = c('Michigan', 'Florida', 'Pennsylvania', 'New Jersey', 'New York', 'Illinois', 'Texas', 'California', 'Ohio', 'Massachusetts')) + ggtitle('Top 10 States with the Most Cases in a Week') + xlab('State') + ylab('Cases in a Week') + coord_flip()
+```
+
+#explanation: according to the results of the above graph, we can see that Michigan takes the lead by a fair amount for having the highest count of cases in the last 7 days. Florida follows close behind with between 30,000-40,000 cases in the last 7 days. I was shocked to see New York and California farther away from the most amount of cases in the last week because they are such populated states that have had a really hard time controlling Covid within their state.
 

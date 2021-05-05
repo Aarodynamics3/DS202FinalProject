@@ -170,6 +170,54 @@ q + scale_fill_manual(name = "Vaccine Name", values = c("#D23369", "#2A3990"), l
 ```
 
 ```{r}
+# Comparing 1st Dose Administration between Ages 65 and up, and ages 65 and under
+
+# Iowa, Illinois, Kansas, Minnesota, Missouri, Nebraska, South Dakota, Wisconsin
+populations <- c(3155000, 12670000, 2913000, 5640000, 6137000, 1934000, 884659, 5822000)
+populations65andup <- c(552125, 2039870, 474819, 919320, 919320, 315242, 152161, 1018850)
+populations65andunder <- populations - populations65andup
+
+onePlusDoses <- covid19Data %>%
+  select(State, people.1plus.Doses, people.1plus.Doses.65plus) %>%
+  rename(
+    plusNormal = people.1plus.Doses,
+    plus65 = people.1plus.Doses.65plus
+  ) %>%
+  mutate(plus65under = plusNormal - plus65) %>%
+  filter(!(State %in% nonContiguous)) %>%
+  select(-plusNormal) %>% 
+  filter(State %in% c("Iowa", "South Dakota", "Minnesota", "Illinois", "Wisconsin", "Missouri", "Nebraska", "Kansas"))
+
+onePlusDoses$State <- tolower(onePlusDoses$State)
+onePlusDoses$PopulationUp = populations65andup
+onePlusDoses$PopulationUnder = populations65andunder
+
+
+onePlusDoses <- onePlusDoses %>%
+  mutate(plus65percent = ((plus65 / PopulationUp) * 100), plus65Upercent = ((plus65under / PopulationUnder) * 100))
+
+nearIowa <- state %>%
+  filter(region %in% c("iowa", "south dakota", "minnesota", "illinois", "wisconsin", "missouri", "nebraska", "kansas"))
+
+onePlusMap <- onePlusDoses %>%
+  left_join(nearIowa, by = c("State" = "region"))
+```
+
+```{r}
+s <- onePlusMap %>%
+  ggplot(aes(x = long, y = lat, fill = plus65Upercent)) + geom_polygon(aes(group=group), color = "black")
+
+s + theme_map() + coord_map() + scale_fill_gradient2(low = "#2A3990", high = "#D23369", mid = "white", midpoint = 22.5, limits = c(15, 30), name = "Percent of Under 65 Population") + theme(legend.position="right") + ggtitle("Per State 1st Dose Administered to ages Under 65")
+```
+
+```{r}
+s2 <- onePlusMap %>%
+  ggplot(aes(x = long, y = lat, fill = plus65percent)) + geom_polygon(aes(group=group), color = "black")
+
+s2 + theme_map() + coord_map() + scale_fill_gradient2(low = "#2A3990", high = "#D23369", mid = "white", midpoint = 80, limits = c(75, 85), name = "Percent of 65+ Population") + theme(legend.position="right") + ggtitle("Per State 1st Dose Administered to ages 65 and Over")
+```
+
+```{r}
 # Sum of fully vaccinated and administered across all U.S.
 
 administeredTotal <- administered %>%
