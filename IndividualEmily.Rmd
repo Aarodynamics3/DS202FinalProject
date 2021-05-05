@@ -185,7 +185,7 @@ dosesAdministered
 ```{r}
 fivestatesdoses <- covid19Data1 %>%
   right_join(dosesAdministered, by = "State") %>%
-  filter(State %in% c("California", "Florida", "Texas", "New York State", "Pennsylvania"))
+  filter(State %in% c("California", "Florida", "Texas", "New York", "Pennsylvania"))
 fivestatesdoses
 ```
 
