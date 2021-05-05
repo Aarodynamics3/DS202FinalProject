@@ -100,7 +100,7 @@ covid19Data$percent.1plus.Doses.18plus <- as.numeric(covid19Data$percent.1plus.D
 ```
 
 
-#Which states have the highest amount of cases (pick top 5)? Do these states also administer the most vaccinations? (use cases and vaccines data) Which vaccine is the most popular for fully vaccinated people in these states?
+#Which states have the highest amount of cases (pick top five)? Have these states also administered the most vaccinations? Which vaccine is the most popular for fully vaccinated people in these states?
 
 
 ```{r}
@@ -130,7 +130,21 @@ casesdeathsstates2
 covid19Data1
 ```
 
-#It makes sense that these five states have the highest total of administered doses because they make up the top five most populated states. Out of these states, Florida, New York and Pennsylvania also have some of the highest numbers for COVID-19 cases over the course of seven days. All of these five states have over 25,000 cases. And, when looking at total COVID-19 cases for these states, California, Florida and Texas have some of the highest totals, with m.
+```{r}
+ggplot(covid19Data2, aes(x = State, weight = people.Fully.Vaccinated)) + geom_bar(fill = "#9C254D") + theme(axis.text.x = element_text(angle = 90)) + ggtitle("People Fully Vaccinated by State") + xlab("State") + ylab("Count")
+```
+
+
+```{r}
+covid19Data2$percent.Fully.Vaccinated <- as.numeric(covid19Data2$percent.Fully.Vaccinated)
+
+ggplot(covid19Data2, aes(x = State, weight = percent.Fully.Vaccinated)) + geom_bar(fill = "#F06292") + theme(axis.text.x = element_text(angle = 90)) + ggtitle("Percent of People Fully Vaccinated by State") + xlab("State") + ylab("Percent Vaccinated")
+```
+
+#It makes sense that California, Florida, New York, Pennsylvania and Texas have the highest total of administered doses because they make up the top five most populated states. Out of these states, Florida, New York and Pennsylvania also have some of the highest numbers for COVID-19 cases over the course of seven days. All of these five states have had over 25,000 cases in this time frame. And, when looking at the states in the top five for total COVID-19 cases, California, Florida and Texas have some of the highest totals, which reach over two million. Illinois and Georgia are also in the top five for COVID-19 cases, even though they rank just outside of the top five populated states. Their populations are high enough to explain their hight total cases.
+
+
+#When looking at the percent of people fully vaccinated by state, the states that have smaller areas and smaller populations have the highest percentages. This makes sense because there are less people to get vaccinated.
 
 ```{r}
 covid19Data2 <- covid19Data %>%
@@ -158,17 +172,21 @@ dosesAdministered <- covid19Data2 %>%
   pivot_longer(!State, names_to = "vaccineName", values_to = "administeredCount")
 dosesAdministered
 ```
+
 ```{r}
 fivestatesdoses <- covid19Data1 %>%
-  right_join(dosesAdministered, by = "State")  
+  right_join(dosesAdministered, by = "State") %>%
+  filter(State %in% c("California", "Florida", "Texas", "New York State", "Pennsylvania"))
 fivestatesdoses
 ```
 
-```{r}
-dosesAdministeredregions <-
-```
-
 
 ```{r}
-ggplot(dosesAdministered, aes(x= vaccineName, weight = administeredCount)) + geom_bar() + facet_wrap(~State)
+ggplot(fivestatesdoses, aes(x = vaccineName, weight = administeredCount, fill = vaccineName)) + geom_bar() + facet_wrap(~State) + theme(axis.text.x = element_text(angle = 90)) + ggtitle("Vaccine Type Distribution for Top Five Vaccinated States") + xlab("Vaccine Name") + ylab("Count") + scale_fill_manual(values = c("janssen" = "#9C254D",
+                             "moderna" = "#F06292",
+                             "pfizer" = "#2A3990",
+                             "unknown" = "#D23369"))
 ```
+
+#Looking at these side-by-side bar charts, it's clear that Pfizer is the most administered vaccine type in the top five vaccinated states. This makes sense because Pfizer is also the most popularly administered vaccine for the U.S. as a whole. Moderna is a close second, but Johnson & Johnson's Janssen vaccine is rarely getting administered compared to the others. This could simply due to the fact that the Janssen vaccine was approved later than the others.
+
