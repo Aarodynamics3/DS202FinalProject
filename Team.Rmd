@@ -205,7 +205,7 @@ casesweek <- mostcases7days %>%
 ggplot(mostcases7days, aes(x = State, weight = `Cases in Last 7 Days`)) + geom_bar(fill = '#D23369') + scale_x_discrete(limit = c('Michigan', 'Florida', 'Pennsylvania', 'New Jersey', 'New York', 'Illinois', 'Texas', 'California', 'Ohio', 'Massachusetts')) + ggtitle('Top 10 States with the Most Cases in a Week') + xlab('State') + ylab('Cases in a Week') + coord_flip()
 ```
 
-**What states had the largest amount of cases over the span of a week?**
+**What states had the largest amount of deaths over the span of a week?**
 
 Now taking a look at the top 10 states that had the most deaths within the span of a week, we can see that California has the highest amount of recorded deaths at 756, a substantially higher amount than the other contenders, especially more than Illinois that takes 10th place with 138. Overall, the state with the largest amounts of deaths is California (756), Texas (580), Florida (463), Georgia (250), New Jersey (245), Massachusetts (191), Pennsylvania(185), New York (169), Virginia (159), and Illinois (138). 
 ```{r, error=FALSE, message=FALSE, warning=FALSE, echo = FALSE, fig.align='center'}
